@@ -72,7 +72,7 @@ def network():
 
     return model
 
-def main():
+def main(_):
     np.random.seed(FLAGS.seed)
 
     model_name = FLAGS.model_name

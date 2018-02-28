@@ -64,6 +64,7 @@ def network():
 # Hyperparams
 BATCH_SIZE = 128
 RANDOM_SEED = 42
+EPOCHS = 5
 
 np.random.seed(RANDOM_SEED)
 
@@ -82,6 +83,6 @@ except OSError:
             samples_per_epoch = num_train ,
             validation_data = data.generate(batch_size = BATCH_SIZE, validation = True),
             nb_val_samples = num_valid,
-            nb_epoch = 2)
+            nb_epoch = EPOCHS)
 
     model.save(model_name)

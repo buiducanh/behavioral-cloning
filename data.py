@@ -28,7 +28,7 @@ class DataPipeline():
             for line in reader:
                 self.lines.append(line)
 
-        self.train_samples, self.validation_samples = train_test_split(self.lines[:limit], test_size = 0.2, shuffle = True, random_state = self.seed)
+        self.train_samples, self.validation_samples = train_test_split(self.lines[:limit], test_size = 0.2, random_state = self.seed)
 
     # account for augmentation
     def num_training(self):

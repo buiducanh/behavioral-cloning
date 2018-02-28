@@ -2,6 +2,17 @@ from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Conv2D, BatchNormalization, Activation, Cropping2D
 from data import DataPipeline
 import numpy as np
+import tensorflow as tf
+
+flags = tf.app.flags
+FLAGS = flags.FLAGS
+
+# command line flags
+flags.DEFINE_string('data_root', 'data/sampledata/', "root of the data set")
+flags.DEFINE_string('model_name', 'model.h5', "root of the data set")
+flags.DEFINE_integer('epochs', 5, "The number of epochs.")
+flags.DEFINE_integer('seed', 42, "The number of epochs.")
+flags.DEFINE_integer('batch_size', 128, "The batch size.")
 
 def network():
     # Nvidia Model
@@ -61,28 +72,27 @@ def network():
 
     return model
 
-# Hyperparams
-BATCH_SIZE = 128
-RANDOM_SEED = 42
-EPOCHS = 5
+def main():
+    np.random.seed(FLAGS.seed)
 
-np.random.seed(RANDOM_SEED)
+    model_name = FLAGS.model_name
 
-model_name = 'model.h5'
+    try:
+        open(model_name)
+        print('Model already learnt')
+    except OSError:
+        model = network()
+        data = DataPipeline(data_rootseed = FLAGS.seed)
+        num_train, num_valid = data.num_training(), data.num_validation()
 
-try:
-    open(model_name)
-    print('Model already learnt')
-except OSError:
-    model = network()
-    data = DataPipeline(seed = RANDOM_SEED)
-    num_train, num_valid = data.num_training(), data.num_validation()
+        model.fit_generator(
+                data.generate(batch_size = FLAGS.batch_size),
+                samples_per_epoch = num_train ,
+                validation_data = data.generate(batch_size = BATCH_SIZE, validation = True),
+                nb_val_samples = num_valid,
+                nb_epoch = FLAGS.epochs)
 
-    model.fit_generator(
-            data.generate(batch_size = BATCH_SIZE),
-            samples_per_epoch = num_train ,
-            validation_data = data.generate(batch_size = BATCH_SIZE, validation = True),
-            nb_val_samples = num_valid,
-            nb_epoch = EPOCHS)
+        model.save(model_name)
 
-    model.save(model_name)
+if __name__ == '__main__':
+    tf.app.run()

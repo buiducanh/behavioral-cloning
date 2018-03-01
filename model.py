@@ -82,7 +82,7 @@ def main(_):
         print('Model already learnt')
     except OSError:
         model = network()
-        data = DataPipeline(data_rootseed = FLAGS.seed)
+        data = DataPipeline(data_root = FLAGS.data_root, seed = FLAGS.seed)
         num_train, num_valid = data.num_training(), data.num_validation()
 
         model.fit_generator(

@@ -88,7 +88,7 @@ def main(_):
         model.fit_generator(
                 data.generate(batch_size = FLAGS.batch_size),
                 samples_per_epoch = num_train ,
-                validation_data = data.generate(batch_size = BATCH_SIZE, validation = True),
+                validation_data = data.generate(batch_size = FLAGS.batch_size, validation = True),
                 nb_val_samples = num_valid,
                 nb_epoch = FLAGS.epochs)
 

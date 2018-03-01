@@ -12,9 +12,11 @@ def flipimg(image, measurement):
     measurement_flipped = -measurement
     return image_flipped, measurement_flipped
 
+# halve the image
 def resize(image):
     return cv2.resize(image, None, fx = 0.5, fy = 1)
 
+# parse csv file and perform prepare data into a generator
 class DataPipeline():
     def __init__(self, data_root = DEFAULT_ROOT, seed = None, limit = -1):
         self.lines = []
@@ -28,6 +30,7 @@ class DataPipeline():
             for line in reader:
                 self.lines.append(line)
 
+        # make train and validation sets
         self.train_samples, self.validation_samples = train_test_split(self.lines[:limit], test_size = 0.2, random_state = self.seed)
 
     # account for augmentation
@@ -45,7 +48,6 @@ class DataPipeline():
         # convert to bgr
         return image[:, :, ::-1]
 
-
     # Augmentation
     def augment_sample(self, sample):
         center_img = self.get_img(sample[0])
@@ -53,9 +55,12 @@ class DataPipeline():
         right_img = self.get_img(sample[2])
         center_val = float(sample[3])
         flip_img, flip_val = flipimg(center_img, center_val)
+
+        # for left and right camera images, compensate the steering by a correction factor
         left_val, right_val = (center_val + correction_factor, center_val - correction_factor)
         return (center_img, left_img, right_img, flip_img), (center_val, left_val, right_val, flip_val)
 
+    # Data generator that provides training samples by default and validation samples on demand
     def generate(self, batch_size = 32, validation = False):
         if validation:
             samples = self.validation_samples
@@ -71,9 +76,11 @@ class DataPipeline():
                 batch_samples = samples[offset: offset + batch_size]
                 images, measurements = [], []
 
+                # augment sample and add them to the dataset
                 for batch_sample in batch_samples:
                     augmented_img, augmented_val = self.augment_sample(batch_sample)
                     images.extend(augmented_img)
                     measurements.extend(augmented_val)
+
                 x, y = np.array(images), np.array(measurements)
                 yield shuffle(x, y, random_state = self.seed)

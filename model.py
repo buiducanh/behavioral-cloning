@@ -9,15 +9,16 @@ FLAGS = flags.FLAGS
 
 # command line flags
 flags.DEFINE_string('data_root', 'data/sampledata/', "root of the data set")
-flags.DEFINE_string('model_name', 'model.h5', "root of the data set")
+flags.DEFINE_string('model_name', 'model.h5', "name of the model to save/ load")
 flags.DEFINE_integer('epochs', 5, "The number of epochs.")
-flags.DEFINE_integer('seed', 42, "The number of epochs.")
+flags.DEFINE_integer('seed', 42, "The seed to ensure reproducibility.")
 flags.DEFINE_integer('batch_size', 128, "The batch size.")
 
 def network():
     # Nvidia Model
     model = Sequential()
 
+    # Crop the images at first to focus only on the road
     model.add(Cropping2D(cropping=((60,30), (0,0)), input_shape=(160, 160, 3)))
 
     model.add(Lambda(lambda x: (x / 127.5) - 1))
@@ -77,6 +78,7 @@ def main(_):
 
     model_name = FLAGS.model_name
 
+    # Check for existing model, else we pass
     try:
         open(model_name)
         print('Model already learnt')

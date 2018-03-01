@@ -1,5 +1,5 @@
 
-# **Behavioral Cloning** 
+# **Behavioral Cloning**
 ---
 
 **Behavioral Cloning Project**
@@ -19,7 +19,7 @@ The goals / steps of this project are the following:
 [image3]: ./flippedsample.png "Flipped Image"
 
 ## Rubric Points
-### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
+### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.
 
 ---
 ### Files Submitted & Code Quality
@@ -29,11 +29,11 @@ The goals / steps of this project are the following:
 My project includes the following files:
 * model.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
-* model.h5 containing a trained convolution neural network 
+* model.h5 containing a trained convolution neural network
 * writeup_report.md or writeup_report.pdf summarizing the results
 
 #### 2. Submission includes functional code
-Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
+Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing
 ```sh
 python drive.py model.h5
 ```
@@ -120,7 +120,7 @@ The model used an adam optimizer, so the learning rate was not tuned manually `m
 
 Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road, flipped center image to eliminate left turn bias.
 
-For details about how I created the training data, see the next section. 
+For details about how I created the training data, see the next section.
 
 ### Model Architecture and Training Strategy
 
@@ -152,8 +152,8 @@ To augment the data set, I also flipped images and angles in order to eliminate 
 
 I also use the left and right camera images and apply a correction factor to help the model recover from the curb.
 
-After the collection and augmentation process, I had 32140 number of data points. I then preprocessed this data by halving the width of the images, in order to reduce the input space.
+After the collection and augmentation process, I had 32140 number of data points. I then preprocessed this data by halving the width of the images, in order to reduce the input space, note that I also add this resize step to `drive.py` to input correct data into the model.
 
-I finally randomly shuffled the data set and put 20% of the data into a validation set. 
+I finally randomly shuffled the data set and put 20% of the data into a validation set.
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting.
